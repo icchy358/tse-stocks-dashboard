@@ -1323,6 +1323,186 @@
       font-size: 12px;
       line-height: 1.6;
     }
+  
+    /* カード表示 (スマホ最適化) */
+    .cards-container {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 12px 0;
+    }
+    .stock-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stock-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .stock-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .stock-card-title-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+    .stock-card-title-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .stock-card-price-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 12px;
+      background: var(--bg-subtle);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .price-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .price-label {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .price-val {
+      font-family: var(--font-outfit);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      line-height: 1.2;
+    }
+    .mcap-val {
+      font-family: var(--font-outfit);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+    .stock-card-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    @media (max-width: 480px) {
+      .stock-card-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .metric-item {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .metric-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .metric-val {
+      font-family: var(--font-outfit);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* 表示切り替えボタングループ */
+    .view-toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .view-toggle-btn {
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .view-toggle-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* レスポンシブ メディアクエリ */
+    @media (max-width: 768px) {
+      .header-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .brand-title {
+        font-size: 18px;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .search-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .sector-select, .sort-select {
+        width: 100%;
+      }
+      .sort-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .table-benchmark-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .view-toggle-group {
+        margin-left: 0 !important;
+        width: 100%;
+        justify-content: center;
+      }
+      .view-toggle-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+      .pagination-bar {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+    @media (max-width: 480px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1350,7 +1530,7 @@
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <div class="brand-badge">J-Quants公式データ連携・東証全銘柄網羅</div>
           <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.12); color: var(--accent-emerald); font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.3);">
-            <span>🔄 データ最終更新: 2026-10-04 17:18</span>
+            <span>🔄 データ最終更新: 2026-10-04 17:50</span>
             <span style="opacity: 0.5;">|</span>
             <span>株価基準: 2026-10-02終値</span>
           </div>
@@ -1680,11 +1860,17 @@
     <!-- テーブル表示部 -->
     <div class="table-container">
       <div class="table-benchmark-banner">
-        <span class="benchmark-tag avg" id="banner-avg">📊 全市場 平均スコア：54点</span>
-        <span class="benchmark-tag pass">🌟 合格ライン：65点以上（A/Sランク）</span>
-        <span style="font-size: 11px; color: var(--text-dim); margin-left: auto;">
-          ※ 財務安全性(25) ＋ ROE(25) ＋ 営業利益率(25) ＋ 割安度(25) による100点満点総合採点
-        </span>
+        <span class="benchmark-tag avg" id="banner-avg">📊 全市場 平均スコア：60点</span>
+        <span class="benchmark-tag pass">🌟 合格ライン：58点以上（Bランク以上）</span>
+
+        <div class="view-toggle-group" style="margin-left: auto;">
+          <button type="button" id="btn-view-table" class="view-toggle-btn active" onclick="setViewMode('table')" title="表形式で表示">
+            📋 一覧表
+          </button>
+          <button type="button" id="btn-view-cards" class="view-toggle-btn" onclick="setViewMode('cards')" title="カード形式で表示">
+            📱 カード表示
+          </button>
+        </div>
       </div>
       <div class="table-scroll">
         <table id="stocks-table">
@@ -1736,6 +1922,11 @@
             <!-- JSで動的レンダリング -->
           </tbody>
         </table>
+      </div>
+
+      <!-- スマホ向け カード表示コンテナ -->
+      <div id="stocks-cards-container" class="cards-container">
+        <!-- JSで動的レンダリング -->
       </div>
 
       <div id="empty-state" class="empty-state">
@@ -2116,11 +2307,33 @@
 
     // アプリ状態
     let currentMarket = 'all'; // 'all' | 'プライム' | 'スタンダード' | 'グロース'
+    let currentViewMode = window.innerWidth <= 768 ? 'cards' : 'table';
     let activeQuickFilters = new Set();
     let sortColumn = 'score';
     let sortDirection = 'desc';
     let currentPage = 1;
     let pageSize = 50;
+
+    // 表示モード切り替え (一覧表 ↔ カード)
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      const btnTable = document.getElementById('btn-view-table');
+      const btnCards = document.getElementById('btn-view-cards');
+      const tableScroll = document.querySelector('.table-scroll');
+      const cardsContainer = document.getElementById('stocks-cards-container');
+
+      if (mode === 'cards') {
+        if (btnCards) btnCards.classList.add('active');
+        if (btnTable) btnTable.classList.remove('active');
+        if (tableScroll) tableScroll.style.display = 'none';
+        if (cardsContainer) cardsContainer.style.display = 'grid';
+      } else {
+        if (btnTable) btnTable.classList.add('active');
+        if (btnCards) btnCards.classList.remove('active');
+        if (tableScroll) tableScroll.style.display = 'block';
+        if (cardsContainer) cardsContainer.style.display = 'none';
+      }
+    }
 
     // ヘッダー定義
     const TABLE_HEADERS = [
@@ -2174,6 +2387,7 @@
         document.getElementById('auth-gate').classList.add('hidden');
         renderKPIs();
         updateSortHeaders();
+        setViewMode(currentViewMode);
         filterAndRender();
       }
     }
@@ -2866,8 +3080,9 @@
       // ページネーションコントロールの描画
       renderPaginationControls(totalPages);
 
-      // 5. テーブル行のHTML生成
+      // 5. テーブル行およびカードのHTML生成
       let html = '';
+      let cardsHtml = '';
       pageItems.forEach(s => {
         const score = calcStockScore(s);
         const perFormatted = s.per ? s.per.toFixed(1) + ' 倍' : '--';
@@ -2926,9 +3141,87 @@
             </td>
           </tr>
         `;
+
+        cardsHtml += `
+          <div class="stock-card">
+            <div class="stock-card-header">
+              <span class="score-badge ${score.rankClass}">
+                <span class="rank-letter">${score.rank}</span>
+                <span>${score.total}点</span>
+              </span>
+              <div class="stock-card-title-wrap">
+                <div class="stock-card-title-top">
+                  <span class="stock-code">${s.code}</span>
+                  <span class="stock-market-tag">${s.market}</span>
+                  <span class="company-name" style="font-size: 15px; font-weight: 700;">${s.name}</span>
+                </div>
+                <div class="company-sub" style="margin-top: 4px;">
+                  <span class="sub-sector">${s.sector}</span>
+                  ${SECTOR33_TO_17[s.sector] ? `<span class="sector17-tag">${SECTOR33_TO_17[s.sector]}</span>` : ''}
+                  ${getStockPolicies(s).slice(0, 2).map(p => `<span class="policy-tag" style="background:${p.bg}; color:${p.color}; border:1px solid ${p.color}33;">${p.short}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+
+            <div class="stock-card-price-row">
+              <div class="price-item">
+                <span class="price-label">最新株価</span>
+                <div class="price-val">${priceFormatted}</div>
+              </div>
+              <div class="price-item">
+                <span class="price-label">時価総額</span>
+                <div class="mcap-val">${mcapFormatted}</div>
+              </div>
+              <button class="detail-btn" style="margin-left: auto; padding: 7px 16px; font-size: 12px;" onclick="openStockModal('${s.code}')">
+                詳細分析 ↗
+              </button>
+            </div>
+
+            <div class="stock-card-metrics-grid">
+              <div class="metric-item">
+                <span class="metric-label">🚀 売上成長率</span>
+                <span class="metric-val" ${sgStyle}>${sgFormatted}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">⚡ EPS上昇率</span>
+                <span class="metric-val" ${egStyle}>${egFormatted}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">📊 出来高</span>
+                <span class="metric-val">${volFormatted}千株</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">⏳ PER</span>
+                <span class="metric-val">${perFormatted}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">📉 PBR</span>
+                <span class="metric-val">${pbrFormatted}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">🧠 ROE</span>
+                <span class="metric-val">${roeFormatted}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">💰 益回り</span>
+                <span class="metric-val" style="color: var(--accent-emerald); font-weight: 700;">${yieldFormatted}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">📈 営業利益率</span>
+                <span class="metric-val">${opFormatted}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">🛡️ 自己資本比率</span>
+                <span class="metric-val">${eqFormatted}</span>
+              </div>
+            </div>
+          </div>
+        `;
       });
 
       tbody.innerHTML = html;
+      const cardsContainer = document.getElementById('stocks-cards-container');
+      if (cardsContainer) cardsContainer.innerHTML = cardsHtml;
     }
 
     // ページネーションコントロールの描画関数
@@ -3003,7 +3296,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
           <div class="modal-header-badge">${stock.code} ｜ 東証${stock.market}</div>
           <div style="font-size: 11px; font-weight: 600; color: var(--text-dim); background: var(--bg-subtle); padding: 3px 10px; border-radius: 9999px; border: 1px solid var(--border);">
-            📅 分析・データ更新: 2026-10-04 17:18
+            📅 分析・データ更新: 2026-10-04 17:50
           </div>
         </div>
         <h2 class="modal-stock-title">${stock.name}</h2>
